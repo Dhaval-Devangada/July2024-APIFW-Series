@@ -9,7 +9,7 @@ public enum AuthType {
     // In Rest assured we have one enum which is Content Type
 
     BEARER_TOKEN,
-    OAUTH,
+    OAUTH2,
     BASIC_AUTH,
     API_KEY,
     NO_AUTH
