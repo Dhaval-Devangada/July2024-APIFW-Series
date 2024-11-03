@@ -10,6 +10,7 @@ import io.restassured.specification.RequestSpecification;
 import io.restassured.specification.ResponseSpecification;
 
 import static io.restassured.RestAssured.expect;
+import static org.hamcrest.Matchers.*;
 
 import java.io.File;
 import java.util.Map;
@@ -22,6 +23,7 @@ public class RestClient {
 
     //define Response spec
     private ResponseSpecification responseSpec200 = expect().statusCode(200);
+    private ResponseSpecification responseSpec200or400 = expect().statusCode(anyOf(equalTo(200),equalTo(404)));
     private ResponseSpecification responseSpec201 = expect().statusCode(201);
     private ResponseSpecification responseSpec204 = expect().statusCode(204);
     private ResponseSpecification responseSpec400 = expect().statusCode(400);
@@ -100,7 +102,7 @@ public class RestClient {
 
         applyParams(requestSpecification, queryParams, pathParams);
 
-        Response response = requestSpecification.get(endPoint).then().spec(responseSpec200).extract().response();
+        Response response = requestSpecification.get(endPoint).then().spec(responseSpec200or400).extract().response();
         response.prettyPrint();
         return response;
     }
@@ -155,6 +157,64 @@ public class RestClient {
         applyParams(requestSpecification, queryParams, pathParams);
 
         Response response = requestSpecification.body(file).post(endPoint).then().spec(responseSpec201).extract().response();
+        response.prettyPrint();
+        return response;
+        // T means anyType, I/this method will give you any kind of object
+    }
+
+    /**
+     *
+     * @param endPoint
+     * @param body
+     * @param queryParams
+     * @param pathParams
+     * @param authType
+     * @param contentType
+     * @return
+     * @param <T>
+     */
+    public <T> Response put(String endPoint,
+                             T body, //(we can pass pojo, string anything )
+                             Map<String, String> queryParams,
+                             Map<String, String> pathParams,
+                             AuthType authType, ContentType contentType) {
+
+        RequestSpecification requestSpecification = setupAuthAndContentType(authType, contentType);
+
+        applyParams(requestSpecification, queryParams, pathParams);
+
+        Response response = requestSpecification.body(body).put(endPoint).then().spec(responseSpec200).extract().response();
+        response.prettyPrint();
+        return response;
+        // T menas anyType, I will give you any kind of object
+    }
+
+    public <T> Response patch(String endPoint,
+                            T body, //(we can pass pojo, string anything )
+                            Map<String, String> queryParams,
+                            Map<String, String> pathParams,
+                            AuthType authType, ContentType contentType) {
+
+        RequestSpecification requestSpecification = setupAuthAndContentType(authType, contentType);
+
+        applyParams(requestSpecification, queryParams, pathParams);
+
+        Response response = requestSpecification.body(body).patch(endPoint).then().spec(responseSpec200).extract().response();
+        response.prettyPrint();
+        return response;
+        // T menas anyType, I will give you any kind of object
+    }
+
+    public <T> Response delete(String endPoint,
+                            Map<String, String> queryParams,
+                            Map<String, String> pathParams,
+                            AuthType authType, ContentType contentType) {
+
+        RequestSpecification requestSpecification = setupAuthAndContentType(authType, contentType);
+
+        applyParams(requestSpecification, queryParams, pathParams);
+
+        Response response = requestSpecification.delete(endPoint).then().spec(responseSpec204).extract().response();
         response.prettyPrint();
         return response;
         // T menas anyType, I will give you any kind of object
