@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+
+<suite name="API Regression Suite" verbose="3">
+
+
+    <test name="Req Res API Test">
+        <parameter name="baseUrl" value="https://reqres.in"/>
+        <classes>
+            <class name="com.qa.api.reqres.tests.ReqResTest"/>
+        </classes>
+    </test>
+
+    <test name="Create User Test">
+        <parameter name="baseUrl" value="https://gorest.co.in"/>
+        <classes>
+            <class name="com.qa.api.tests.CreateUserTest"/>
+        </classes>
+    </test>
+
+    <test name="GET User Test">
+        <parameter name="baseUrl" value="https://gorest.co.in"/>
+        <classes>
+            <class name="com.qa.api.tests.GetUserTest"/>
+        </classes>
+    </test>
+
+    <test name="Update User Test">
+        <parameter name="baseUrl" value="https://gorest.co.in"/>
+        <classes>
+            <class name="com.qa.api.tests.UpdateUserTests"/>
+        </classes>
+    </test>
+
+    <test name="Partial Update User Test">
+        <parameter name="baseUrl" value="https://gorest.co.in"/>
+        <classes>
+            <class name="com.qa.api.tests.PatchUserTest"/>
+        </classes>
+    </test>
+
+    <test name="Delete User Test">
+        <parameter name="baseUrl" value="https://gorest.co.in"/>
+        <classes>
+            <class name="com.qa.api.tests.DeleteUserTest"/>
+        </classes>
+    </test>
+
+
+    <!--        <test name="Contacts API Test">-->
+
+    <!--            <classes>-->
+    <!--                <class name="com.qa.contacts.api.tests.ContactsAPITest"/>-->
+    <!--            </classes>-->
+    <!--        </test>-->
+
+
+    <!--        <test name="Product API Test">-->
+
+    <!--            <classes>-->
+    <!--                <class name="com.qa.products.api.tests.ProductsAPITest"/>-->
+    <!--            </classes>-->
+    <!--        </test>-->
+
+    <!--        <test name="Amadeus API Test">-->
+
+    <!--            <classes>-->
+    <!--                <class name="com.qa.api.amadeus.tests.AmadeusAPITest"/>-->
+    <!--            </classes>-->
+    <!--        </test>-->
+
+</suite>
+
+        <!--If we are having multiple base URL then one soluation is first run our main project API the other projects API.-->
+        <!--Because if we use (parameters) concept and we put/write our other project API "test" block before our main project "test" block then the "baseUrl" will get changed in the  memory (that baseUrl will be of our 2nd project)-->
+        <!--2nd soluation is that we can create seprate xml for our 2nd project api-->
+        <!--but if we create two/more xmls's then it will be a problem in the CI/CD as well that how to execute two/more xmls-->
+        <!--and if we have more third parties then we need to create more xml's-->
+        <!--so here we have two soluation, first write project related tests bloks then the third party tests blocks..but we don't want to do it because our team members can do a mistakes-->
+        <!--We can pass the parameters for both the projects as well, in that case sequence of tests blocks of our project and tests blocks of third party blocks won't cause any issue-->
+        <!--so total three approaches we have-->
+        <!--1. maintain sequence - first projects tests blocks then third party tests blocks-->
+        <!--2. individual .xml files for third party projects-->
+        <!--3. simple supply the respective "baseUrl" by configuring parameters-->

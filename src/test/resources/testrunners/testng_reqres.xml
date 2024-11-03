@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+
+<suite name="ReqRes API Automation Suite" verbose="3">
+
+    <test name="Req Res API Test">
+        <parameter name="baseUrl" value="https://reqres.in"/>
+        <classes>
+            <class name="com.qa.api.reqres.tests.ReqResTest"/>
+        </classes>
+    </test>
+
+</suite>
+
+        <!--If we are having multiple base URL then one soluation is first run our main project API the other projects API.-->
+        <!--Because if we use (parameters) concept and we put/write our other project API "test" block before our main project "test" block then the "baseUrl" will get changed in the  memory (that baseUrl will be of our 2nd project)-->
+        <!--2nd soluation is that we can create seprate xml for our 2nd project api-->
