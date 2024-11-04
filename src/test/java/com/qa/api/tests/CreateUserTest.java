@@ -16,7 +16,7 @@ public class CreateUserTest extends BaseTest {
 
     @Test
     public void createUserTest() {
-        User user = new User("dhaval", StringUtility.getRandomEmailId(), "male", "active");
+        User user = new User(null,"dhaval", StringUtility.getRandomEmailId(), "male", "active");
         Response response = restClient.post("public/v2/users", user, null, null, AuthType.BEARER_TOKEN, ContentType.JSON);
         Assert.assertEquals(response.getStatusCode(), 201);
     }
