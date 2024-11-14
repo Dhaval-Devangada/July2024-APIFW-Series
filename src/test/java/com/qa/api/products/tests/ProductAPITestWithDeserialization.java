@@ -15,7 +15,7 @@ public class ProductAPITestWithDeserialization extends BaseTest {
 
     @Test
     public void getProductsTest(){
-        Response response = restClient.get("/products", null, null, AuthType.NO_AUTH, ContentType.JSON);
+        Response response = restClient.get(BASE_URL_PRODUCT,"/products", null, null, AuthType.NO_AUTH, ContentType.JSON);
         Assert.assertEquals(response.getStatusCode(),200);
         Product[] product = JsonUtils.deserialize(response, Product[].class);
 

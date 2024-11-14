@@ -11,7 +11,7 @@ public class GetUserWithDeserializationTest extends BaseTest {
 
     @Test
     public void getUsersTest(){
-        Response response = restClient.get("public/v2/users", null, null, AuthType.BEARER_TOKEN, ContentType.JSON);
+        Response response = restClient.get(BASE_URL_GOREST,"public/v2/users", null, null, AuthType.BEARER_TOKEN, ContentType.JSON);
         Assert.assertEquals(response.getStatusCode(),200);
     }
 }
