@@ -13,6 +13,7 @@ import static io.restassured.RestAssured.expect;
 import static org.hamcrest.Matchers.*;
 
 import java.io.File;
+import java.util.Base64;
 import java.util.Map;
 
 /**
@@ -24,7 +25,7 @@ public class RestClient {
     //define Response spec
     private ResponseSpecification responseSpec200 = expect().statusCode(200);
     private ResponseSpecification responseSpec200or400 = expect().statusCode(anyOf(equalTo(200),equalTo(404)));
-    private ResponseSpecification responseSpec200or201 = expect().statusCode(anyOf(equalTo(200),equalTo(404)));
+    private ResponseSpecification responseSpec200or201 = expect().statusCode(anyOf(equalTo(200),equalTo(201)));
     private ResponseSpecification responseSpec201 = expect().statusCode(201);
     private ResponseSpecification responseSpec204 = expect().statusCode(204);
     private ResponseSpecification responseSpec400 = expect().statusCode(400);
@@ -34,9 +35,9 @@ public class RestClient {
     private ResponseSpecification responseSpec500 = expect().statusCode(500);
 
 
-    private String baseUrl = ConfigManager.get("baseUrl");
+    //private String baseUrl = ConfigManager.get("baseUrl");
 
-    private RequestSpecification setupRequest(AuthType authType, ContentType contentType) {
+    private RequestSpecification setupRequest(String baseUrl,AuthType authType, ContentType contentType) {
 
         RequestSpecification request = RestAssured.given().log().all()
                 .baseUri(baseUrl)
@@ -49,11 +50,12 @@ public class RestClient {
                 break;
             case CONTACTS_BEARER_TOKEN:
                 request.header("Authorization","Bearer " + ConfigManager.get("contacts_bearer_Token"));
+                break;
             case OAUTH2:
                 request.header("Authorization", "Bearer " + generateOAuth2Token());
                 break;
             case BASIC_AUTH:
-                request.header("Authorization", "Basic ");
+                request.header("Authorization", "Basic " + generateBasicAuthToken());
                 break;
             case API_KEY:
                 request.header("x-api-key", ConfigManager.get("apiKey"));
@@ -67,6 +69,17 @@ public class RestClient {
         }
 
         return request;
+    }
+
+    /**
+     * This method is used to generate the Base64 encoded String
+     * @return
+     *
+     * if we have multiple APIS which are using Basic Auth then we can write the switch case here
+     */
+    private String generateBasicAuthToken(){
+        String credentials = ConfigManager.get("basicUsername") + ":" + ConfigManager.get("basicPassword");//admin:admin
+        return Base64.getEncoder().encodeToString(credentials.getBytes());
     }
 
     private String generateOAuth2Token() {
@@ -96,12 +109,14 @@ public class RestClient {
      * @param authType
      * @param contentType
      * @return it returns the get api response
+     *
+     * Don't make join/append the baseUrl + end point, keep it separate because baseUrl and endPoint can change in future
      */
-    public Response get(String endPoint, Map<String, String> queryParams,
+    public Response get(String baseUrl,String endPoint, Map<String, String> queryParams,
                         Map<String, String> pathParams,
                         AuthType authType, ContentType contentType) {
 
-        RequestSpecification requestSpecification = setupAuthAndContentType(authType, contentType);
+        RequestSpecification requestSpecification = setupAuthAndContentType(baseUrl,authType, contentType);
 
         applyParams(requestSpecification, queryParams, pathParams);
 
@@ -122,13 +137,13 @@ public class RestClient {
      * @param <T>
      * @return it returns the POST api response
      */
-    public <T> Response post(String endPoint,
+    public <T> Response post(String baseUrl,String endPoint,
                              T body, //(we can pass pojo, string anything )
                              Map<String, String> queryParams,
                              Map<String, String> pathParams,
                              AuthType authType, ContentType contentType) {
 
-        RequestSpecification requestSpecification = setupAuthAndContentType(authType, contentType);
+        RequestSpecification requestSpecification = setupAuthAndContentType(baseUrl,authType, contentType);
 
         applyParams(requestSpecification, queryParams, pathParams);
 
@@ -149,13 +164,13 @@ public class RestClient {
      * @param contentType
      * @return
      */
-    public Response post(String endPoint,
+    public Response post(String baseUrl,String endPoint,
                          File file, //(we can pass pojo, string anything )
                          Map<String, String> queryParams,
                          Map<String, String> pathParams,
                          AuthType authType, ContentType contentType) {
 
-        RequestSpecification requestSpecification = setupAuthAndContentType(authType, contentType);
+        RequestSpecification requestSpecification = setupAuthAndContentType(baseUrl,authType, contentType);
 
         applyParams(requestSpecification, queryParams, pathParams);
 
@@ -176,13 +191,13 @@ public class RestClient {
      * @return
      * @param <T>
      */
-    public <T> Response put(String endPoint,
+    public <T> Response put(String baseUrl,String endPoint,
                              T body, //(we can pass pojo, string anything )
                              Map<String, String> queryParams,
                              Map<String, String> pathParams,
                              AuthType authType, ContentType contentType) {
 
-        RequestSpecification requestSpecification = setupAuthAndContentType(authType, contentType);
+        RequestSpecification requestSpecification = setupAuthAndContentType(baseUrl,authType, contentType);
 
         applyParams(requestSpecification, queryParams, pathParams);
 
@@ -192,13 +207,13 @@ public class RestClient {
         // T menas anyType, I will give you any kind of object
     }
 
-    public <T> Response patch(String endPoint,
+    public <T> Response patch(String baseUrl,String endPoint,
                             T body, //(we can pass pojo, string anything )
                             Map<String, String> queryParams,
                             Map<String, String> pathParams,
                             AuthType authType, ContentType contentType) {
 
-        RequestSpecification requestSpecification = setupAuthAndContentType(authType, contentType);
+        RequestSpecification requestSpecification = setupAuthAndContentType(baseUrl,authType, contentType);
 
         applyParams(requestSpecification, queryParams, pathParams);
 
@@ -208,23 +223,23 @@ public class RestClient {
         // T menas anyType, I will give you any kind of object
     }
 
-    public <T> Response delete(String endPoint,
+    public <T> Response delete(String baseUrl,String endPoint,
                             Map<String, String> queryParams,
                             Map<String, String> pathParams,
                             AuthType authType, ContentType contentType) {
 
-        RequestSpecification requestSpecification = setupAuthAndContentType(authType, contentType);
+        RequestSpecification requestSpecification = setupAuthAndContentType(baseUrl,authType, contentType);
 
         applyParams(requestSpecification, queryParams, pathParams);
 
         Response response = requestSpecification.delete(endPoint).then().spec(responseSpec204).extract().response();
         response.prettyPrint();
         return response;
-        // T menas anyType, I will give you any kind of object
+        // T means anyType, I will give you any kind of object
     }
 
-    private RequestSpecification setupAuthAndContentType(AuthType authType, ContentType contentType) {
-        return setupRequest(authType, contentType);
+    private RequestSpecification setupAuthAndContentType(String baseUrl,AuthType authType, ContentType contentType) {
+        return setupRequest(baseUrl,authType, contentType);
     }
 
     private void applyParams(RequestSpecification requestSpecification, Map<String, String> queryParams, Map<String, String> pathParams) {
