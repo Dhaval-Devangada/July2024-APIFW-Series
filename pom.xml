@@ -1,106 +1,172 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <!--This is our triggring point from here we will run our all the tests
+    Using maven we can run our testcases from 3 places
+    1. maven-eclipse/intellij (clean install)
+    2. maven terminal CMD (mvn clean install)(Maven should be installed)
+    3. maven - jenkins ci cd jobs
 
-  <groupId>July2024APIBatch</groupId>
-  <artifactId>July2024APIFWSeries</artifactId>
-  <version>1.0-SNAPSHOT</version>
-  <packaging>jar</packaging>
+    How to execute using maven?
+    Maven understands only POM.xml file. Maven does not understand what is Testng and other things
+    POM has below things
+    Depedencies
+    Plugins:
+    1.Compiler plugin,
+    2.Surefire
 
-  <name>July2024APIFWSeries</name>
-  <url>http://maven.apache.org</url>
+    Whenever we execute any Maven command, Maven will check that do you have any POM.xml file
+    - Check the depedencies
+    - Compiler plugin - Compile the project - Compile two things 1.src/main/java(java) 2. src/test/java(testng)
+    - Surefire plugin - Run the test cases -
+        - It will always go to src/test/java(testng) and will run the testcases. Package by package.
+          But we have "BaseTest.java" utility there and we can have other utility there as well so we don't want to run our test from there
+        - But we will say go to our runner "testng_reg.xml" and run the testcases from there
+     - clean install means - It will delete the "target" folder from root /clean everything from target folder & check again the depedencies and start everything properly
+     - Once execution is done than "output files"/jar files will get generated under the "target folder"
+     - maven will add some internal plugins as well
+     - Maven will delete target folder using (maven-clean-intsall plugin)
+     -Then Maven will collect the resources(src/main/resources) using (maven-resources-plugin)
+     - Then maven will compile the (src/main)code using(maven-compiler-plugin) and .class files will be created under target folder(classes)
+     -Then again will check for the test resources and will collect the resources(src/test/resources) using (maven-resources-plugin)
+     - Then maven will compile the (src/test)code using(maven-compiler-plugin) and .class files will be created under target folder(test-classes)
+     - Once everything is done than our tests will be triggered using (surefire-plugin)
+     - Once the execution is done than .Jar files will get created under the target folder
 
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.source>18</maven.compiler.source>
-    <maven.compiler.target>18</maven.compiler.target>
-  </properties>
-
-  <dependencies>
-    <!-- https://mvnrepository.com/artifact/io.rest-assured/rest-assured -->
-    <dependency>
-      <groupId>io.rest-assured</groupId>
-      <artifactId>rest-assured</artifactId>
-      <version>5.5.0</version>
-    </dependency>
-
-    <!-- https://mvnrepository.com/artifact/io.rest-assured/json-schema-validator -->
-    <dependency>
-      <groupId>io.rest-assured</groupId>
-      <artifactId>json-schema-validator</artifactId>
-      <version>5.5.0</version>
-    </dependency>
-
-
-    <!-- https://mvnrepository.com/artifact/org.testng/testng -->
-    <dependency>
-      <groupId>org.testng</groupId>
-      <artifactId>testng</artifactId>
-      <version>7.0.0</version>
-    </dependency>
-
-    <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
-    <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-databind</artifactId>
-      <version>2.18.0</version>
-    </dependency>
-
-    <!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
-    <dependency>
-      <groupId>org.projectlombok</groupId>
-      <artifactId>lombok</artifactId>
-      <version>1.18.34</version>
-    </dependency>
-
-    <!-- https://mvnrepository.com/artifact/com.jayway.jsonpath/json-path -->
-    <dependency>
-      <groupId>com.jayway.jsonpath</groupId>
-      <artifactId>json-path</artifactId>
-      <version>2.9.0</version>
-    </dependency>
-
-    <!-- Depedencies for xml path for deseriliazation -->
-    <dependency>
-      <groupId>com.fasterxml.jackson.dataformat</groupId>
-      <artifactId>jackson-dataformat-xml</artifactId>
-      <version>2.17.2</version>
-    </dependency>
-
-    <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-core</artifactId>
-      <version>2.17.2</version>
-    </dependency>
-
-    <!-- https://mvnrepository.com/artifact/com.github.scribejava/scribejava-core -->
-    <dependency>
-      <groupId>com.github.scribejava</groupId>
-      <artifactId>scribejava-core</artifactId>
-      <version>2.5.3</version>
-    </dependency>
-
-    <!-- https://mvnrepository.com/artifact/io.qameta.allure/allure-rest-assured -->
-    <dependency>
-      <groupId>io.qameta.allure</groupId>
-      <artifactId>allure-rest-assured</artifactId>
-      <version>2.29.0</version>
-    </dependency>
-
-    <!-- https://mvnrepository.com/artifact/io.qameta.allure/allure-testng -->
-    <dependency>
-      <groupId>io.qameta.allure</groupId>
-      <artifactId>allure-testng</artifactId>
-      <version>2.29.0</version>
-    </dependency>
+     - If you want to run the project from terminal than make sure that MAVEN is installed in your system
 
 
-    <dependency>
-      <groupId>com.aventstack</groupId>
-      <artifactId>extentreports</artifactId>
-      <version>5.0.8</version>
-    </dependency>
+     -->
+    <groupId>July2024APIBatch</groupId>
+    <artifactId>July2024APIFWSeries</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
+    <name>July2024APIFWSeries</name>
+    <url>http://maven.apache.org</url>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>18</maven.compiler.source>
+        <maven.compiler.target>18</maven.compiler.target>
+    </properties>
+
+    <dependencies>
+        <!-- https://mvnrepository.com/artifact/io.rest-assured/rest-assured -->
+        <dependency>
+            <groupId>io.rest-assured</groupId>
+            <artifactId>rest-assured</artifactId>
+            <version>5.5.0</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/io.rest-assured/json-schema-validator -->
+        <dependency>
+            <groupId>io.rest-assured</groupId>
+            <artifactId>json-schema-validator</artifactId>
+            <version>5.5.0</version>
+        </dependency>
 
 
-  </dependencies>
+        <!-- https://mvnrepository.com/artifact/org.testng/testng -->
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>7.0.0</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.18.0</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.34</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.jayway.jsonpath/json-path -->
+        <dependency>
+            <groupId>com.jayway.jsonpath</groupId>
+            <artifactId>json-path</artifactId>
+            <version>2.9.0</version>
+        </dependency>
+
+        <!-- Depedencies for xml path for deseriliazation -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.dataformat</groupId>
+            <artifactId>jackson-dataformat-xml</artifactId>
+            <version>2.17.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>2.17.2</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.github.scribejava/scribejava-core -->
+        <dependency>
+            <groupId>com.github.scribejava</groupId>
+            <artifactId>scribejava-core</artifactId>
+            <version>2.5.3</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/io.qameta.allure/allure-rest-assured -->
+        <dependency>
+            <groupId>io.qameta.allure</groupId>
+            <artifactId>allure-rest-assured</artifactId>
+            <version>2.29.0</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/io.qameta.allure/allure-testng -->
+        <dependency>
+            <groupId>io.qameta.allure</groupId>
+            <artifactId>allure-testng</artifactId>
+            <version>2.29.0</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>com.aventstack</groupId>
+            <artifactId>extentreports</artifactId>
+            <version>5.0.8</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+                <configuration>
+                    <source>18</source>
+                    <target>18</target>
+                </configuration>
+            </plugin>
+
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.20</version>
+
+                <configuration>
+                    <forkCount>3</forkCount>
+                    <reuseForks>true</reuseForks>
+                    <suiteXmlFiles>
+                        <suiteXmlFile>src/test/resources/testrunners/testng_regression.xml</suiteXmlFile>
+                        <!-- <suiteXmlFile>${suiteXmlFile}</suiteXmlFile> -->
+                    </suiteXmlFiles>
+                </configuration>
+            </plugin>
+
+        </plugins>
+
+    </build>
 </project>
