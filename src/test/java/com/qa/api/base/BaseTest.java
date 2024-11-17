@@ -11,6 +11,7 @@ import org.testng.annotations.BeforeTest;
 public class BaseTest {
 
     // We can use "BaseTest" class to maintain our constant as well and we can create constants in AppConstant as well
+    //***************App Base URLs ******************//
     protected final static String BASE_URL_REQ_RES = "https://reqres.in";
     protected final static String BASE_URL_PRODUCT = "https://fakestoreapi.com";
     protected final static String BASE_URL_GOREST = "https://gorest.co.in";
@@ -18,6 +19,8 @@ public class BaseTest {
     protected final static String BASE_URL_CIRCUIT = "https://ergast.com";
     protected final static String BASE_URL_BASIC_AUTH = "https://the-internet.herokuapp.com";
     protected final static String BASE_URL_AMADEUS = "https://test.api.amadeus.com";
+
+    //***************App EndPoints ******************//
 
 
     protected RestClient restClient; // Will be used only in the class which extend this class
