@@ -7,29 +7,42 @@ import com.qa.api.utils.StringUtility;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import org.testng.Assert;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import java.io.File;
 
 
 public class CreateUserTest extends BaseTest {
+    //Who will provide the parameterization approach -TestNg
+    //We are parameterizing our testcases and removing hard code values from the tests
+    //Most of the time we will be using the data provider in the POST call because we are creating the data/supply the data from our side
+    @DataProvider
+    public Object[][] getUserData(){
+        //Data provider always return two dimensional  object array
+        return new Object[][]{
+                {"Dhaval","male","active"},
+                {"Abhi","male","inactive"},
+                {"Dhaval","male","active"}
+        };
+    }
 
-    @Test
-    public void createUserTest() {
-        User user = new User(null,"dhaval", StringUtility.getRandomEmailId(), "male", "active");
+    @Test(dataProvider = "getUserData") //We need to maintain the 3 holding parameters here. We can not change the sequence
+    public void createUserTest(String name,String gender,String status) {
+        User user = new User(null,name, StringUtility.getRandomEmailId(), gender, status);
         Response response = restClient.post(BASE_URL_GOREST,"public/v2/users", user, null, null, AuthType.BEARER_TOKEN, ContentType.JSON);
         Assert.assertEquals(response.getStatusCode(), 201);
     }
 
-    @Test
-    public void createUserWithBuilderTest() {
+    @Test(dataProvider = "getUserData")
+    public void createUserWithBuilderTest(String name,String gender,String status) {
 
         //POST:
         User user = User.builder()
-                .name("Kavya")
+                .name(name)
                 .email(StringUtility.getRandomEmailId())
-                .status("inactive")
-                .gender("female")
+                .status(status)
+                .gender(gender)
                 .build();
 
         Response response = restClient.post(BASE_URL_GOREST,"public/v2/users", user, null, null, AuthType.BEARER_TOKEN, ContentType.JSON);
