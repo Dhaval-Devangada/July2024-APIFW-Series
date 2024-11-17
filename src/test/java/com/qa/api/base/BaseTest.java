@@ -1,6 +1,8 @@
 package com.qa.api.base;
 
 import com.qa.api.client.RestClient;
+import io.qameta.allure.restassured.AllureRestAssured;
+import io.restassured.RestAssured;
 import org.testng.annotations.BeforeTest;
 
 /**
@@ -15,6 +17,7 @@ public class BaseTest {
     protected final static String BASE_URL_CONTACTS = "https://thinking-tester-contact-list.herokuapp.com";
     protected final static String BASE_URL_CIRCUIT = "https://ergast.com";
     protected final static String BASE_URL_BASIC_AUTH = "https://the-internet.herokuapp.com";
+    protected final static String BASE_URL_AMADEUS = "https://test.api.amadeus.com";
 
 
     protected RestClient restClient; // Will be used only in the class which extend this class
@@ -25,6 +28,7 @@ public class BaseTest {
 //        if(baseUrl!=null){
 //            ConfigManager.set("baseUrl",baseUrl); // It will not write it fo you in the config.properties file but it will update in the memory
 //        }
+        RestAssured.filters(new AllureRestAssured());  // Allure is an kind of web server. It will host the all the html and json files there. - No need to add any listener for Allure report
         restClient = new RestClient();
     }
 }
