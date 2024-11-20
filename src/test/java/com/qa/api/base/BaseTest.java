@@ -1,8 +1,11 @@
 package com.qa.api.base;
 
 import com.qa.api.client.RestClient;
+import com.qa.api.mocking.WireMockSetup;
 import io.qameta.allure.restassured.AllureRestAssured;
 import io.restassured.RestAssured;
+import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.BeforeTest;
 
 /**
@@ -19,19 +22,31 @@ public class BaseTest {
     protected final static String BASE_URL_CIRCUIT = "https://ergast.com";
     protected final static String BASE_URL_BASIC_AUTH = "https://the-internet.herokuapp.com";
     protected final static String BASE_URL_AMADEUS = "https://test.api.amadeus.com";
+    protected final static String BASE_URL_LOCALHOST_PORT = "http://localhost:8090";
+
 
     //***************App EndPoints ******************//
 
 
     protected RestClient restClient; // Will be used only in the class which extend this class
 
-//    @Parameters({"baseUrl"})   //(These parameters helps us to read those parameters which we are reading from testng.xml file and if we are writing the parameter we need to supply the parameters)
+    @BeforeSuite
+    public void setUpReport() {
+        RestAssured.filters(new AllureRestAssured());  // Allure is an kind of web server. It will host the all the html and json files there. - No need to add any listener for Allure report
+    }
+
+    //    @Parameters({"baseUrl"})   //(These parameters helps us to read those parameters which we are reading from testng.xml file and if we are writing the parameter we need to supply the parameters)
     @BeforeTest
-    public void setUp(){ //@Optional String baseUrl - Optional annotation is coming from testng
+    public void setUp() { //@Optional String baseUrl - Optional annotation is coming from testng
 //        if(baseUrl!=null){
 //            ConfigManager.set("baseUrl",baseUrl); // It will not write it fo you in the config.properties file but it will update in the memory
 //        }
-        RestAssured.filters(new AllureRestAssured());  // Allure is an kind of web server. It will host the all the html and json files there. - No need to add any listener for Allure report
         restClient = new RestClient();
+        WireMockSetup.createWireMockServer();
+    }
+
+    @AfterTest
+    public void stopMockServer() {
+        WireMockSetup.stopMockServer();
     }
 }
