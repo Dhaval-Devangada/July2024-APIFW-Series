@@ -54,7 +54,7 @@ public class APIMocks {
                 .willReturn(aResponse()
                         .withStatus(200)
                         .withHeader("Content-Type", "application/json")
-                        .withBodyFile("user.json"))
+                        .withBody("user.json"))
         );
     }
 

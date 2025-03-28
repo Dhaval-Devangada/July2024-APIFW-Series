@@ -11,8 +11,8 @@ public class WireMockSetup {
 
     public static WireMockServer server;
     public static void createWireMockServer(){
-        server = new WireMockServer(8089);
-        WireMock.configureFor("localhost",8089); //host means if we are running this on any other machine than we need to give IP address of that machine
+        server = new WireMockServer(9091);
+        WireMock.configureFor("localhost",9091); //host means if we are running this on any other machine than we need to give IP address of that machine
         server.start(); //dummy server will start
     }
 

@@ -22,7 +22,7 @@ public class BaseTest {
     protected final static String BASE_URL_CIRCUIT = "https://ergast.com";
     protected final static String BASE_URL_BASIC_AUTH = "https://the-internet.herokuapp.com";
     protected final static String BASE_URL_AMADEUS = "https://test.api.amadeus.com";
-    protected final static String BASE_URL_LOCALHOST_PORT = "http://localhost:8090";
+    protected final static String BASE_URL_LOCALHOST_PORT = "http://localhost:9091";
 
 
     //***************App EndPoints ******************//
